@@ -60,17 +60,60 @@ DOM.updateGuessedWord(STATE.movieGuess);
 document.body.addEventListener("keyup", function(e){
     let keyPressed = e.key;
 
+    if (STATE.attempts == 0 || STATE.movie == STATE.movieGuess){
+        return;
+    }
+    
     if (!/^[a-z]$/i.test(keyPressed)) {
         // esto no es una letra de la a la z
         return;
     }
+    let isCorrect = STATE.movie.includes(keyPressed);
+    let hasAlreadyBeenPressed = STATE.checkedLetters.includes(keyPressed);
+
+    if (!isCorrect || hasAlreadyBeenPressed) {
+        STATE.attempts--;
+        DOM.updateAttempts();
+
+        if (STATE.attempts == 0) {
+            // hemos perdido
+            DOM.showLooserMessage();
+            const audio = new Audio('../sounds/lost.wav');
+            audio.play();
+        }
+    }
+
+
+
+
+    if (!hasAlreadyBeenPressed) {
+
+        // Es correcta la letra pulsada?
+
+        STATE.checkedLetters.push(keyPressed);
+        DOM.addGuessedLetter(keyPressed, isCorrect);
+
+        
+    }
+
     for (let i=0;i<STATE.movie.length;i++) {
 
         if (STATE.movie[i] == keyPressed)
         STATE.movieGuess = STATE.movieGuess.slice(0, i) + keyPressed + STATE.movieGuess.slice(i+1);    
     }
      
+      // Hemos ganado?
+
+      if (STATE.movie == STATE.movieGuess) {
+        const audio = new Audio('../sounds/win.wav');
+        audio.play();
+        DOM.showWinnerMessage();
+    }
+    
+
     DOM.updateGuessedWord(STATE.movieGuess)
+
+    
     
 });
 
