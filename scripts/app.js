@@ -34,15 +34,8 @@
 //    indexOf/includes. peliAdivinar.forEach((letra, index)=>) y para cada letra que sea igual 
 //     a la letra que ha pulsado el usuario, substituir la guessedWord[index] = letra 
 //    2.2. Actualizar el DOM (parte de la película adivinada hasta el momento.
-STATE.reset("matrix reloaded");
 
-
-
-// Recorremos el string. nextLetter vale a cada iteración una letra del string
-// tenemos que crear tantos <span>*</span> como letras hay en el string.
-// Cuando encontramos un espacio en realidad hay que crear un <span></span>
-// Todos los span hay que hacer un appendChild en id="puzzle".
-DOM.updateGuessedWord(STATE.movieGuess);
+reset();
 
 
 
@@ -57,7 +50,7 @@ DOM.updateGuessedWord(STATE.movieGuess);
 //  *    movieGuess = movieGuess.slice(0, index) + nextLetter + movie.movieGuess(index+1);
 //  *   3.2 Actualizar el DOM con movieGuess. Lo más sencillo es 'limpiar' todo el HTML de id="puzzle"; y volver a generar todos los <span>. Alternativamente, podríamos actualizar el <span> que coincida con la posición del string donde iría la letra acertada.
 //  * 
-document.body.addEventListener("keyup", function(e){
+document.body.addEventListener("keyup",async function(e){
     let keyPressed = e.key;
 
     if (STATE.attempts == 0 || STATE.movie == STATE.movieGuess){
@@ -80,6 +73,7 @@ document.body.addEventListener("keyup", function(e){
             DOM.showLooserMessage();
             const audio = new Audio('../sounds/lost.wav');
             audio.play();
+            return;
         }
     }
 
@@ -108,12 +102,33 @@ document.body.addEventListener("keyup", function(e){
         const audio = new Audio('../sounds/win.wav');
         audio.play();
         DOM.showWinnerMessage();
+        const imageMovie = await REQUEST.getImageFromMovie(STATE.movie);
+        DOM.displayMovieImage(imageMovie);
+        
+
+        
     }
     
 
     DOM.updateGuessedWord(STATE.movieGuess)
 
-    
-    
 });
+
+document.querySelector("#reset").addEventListener("click", reset);
+
+function reset() {
+    
+    // Invocamos la función getMovieFromJson
+        REQUEST.getMovieFromJson((movie) => {
+        STATE.reset(movie);
+        DOM.updateGuessedWord(STATE.movieGuess);
+        DOM.resetUX();
+        console.log(movie);
+
+    });
+};
+
+
+
+
 

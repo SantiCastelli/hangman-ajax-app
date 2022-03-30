@@ -18,6 +18,7 @@ body {
     justify-content: center;
     min-height: 100vh;
     gap: 2rem;
+    flex-direction: column;
 }
 
 span {

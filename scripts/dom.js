@@ -31,5 +31,21 @@ let DOM = {
     showWinnerMessage() {
         document.querySelector("#guesses").innerHTML = `
         <span style="color:green;width: auto;">¡Has ganado! </span>`;
+    },
+
+   
+
+    resetUX() {
+        document.querySelector("#letters-tried").innerHTML = "";
+        document.querySelector("#guesses").innerHTML = `Intentos restantes: <span>5</span>`;
+        document.querySelector("div").style.display = "block";
+        document.body.style.backgroundImage = "";
+
+    },
+
+    displayMovieImage(url) {
+        document.body.style.backgroundImage = `url(${url})`;
+        document.querySelector("div").style.display = "none";
+
     }
 };
